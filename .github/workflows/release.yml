@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ${{ matrix.os }}
     env:
-      GH_RELEASE_VERSION: s${{ needs.upversion.outputs.new_version }}
+      GH_RELEASE_VERSION: ${{ needs.upversion.outputs.new_version }}
     needs: [upversion]
     strategy:
       matrix:
@@ -30,12 +30,14 @@ jobs:
           dotnet build --configuration Release --no-restore
           echo ${{ env.GH_RELEASE_VERSION }} > GameHelper/bin/Release/net5.0/VERSION.txt
 
+      - name: Zip Folder
+        run: zip -r release.zip GameHelper/bin/Release/net5.0
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ env.GH_RELEASE_VERSION }}
           name: GameHelper-standard-${{ env.GH_RELEASE_VERSION }}
-          files: GameHelper/bin/Release/net5.0/VERSION.txt
+          files: release.zip
           draft: false
           prerelease: false
 
