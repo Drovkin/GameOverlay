@@ -30,8 +30,12 @@ jobs:
           dotnet build --configuration Release --no-restore
           echo ${{ env.GH_RELEASE_VERSION }} > GameHelper/bin/Release/net5.0/VERSION.txt
 
-      - name: Zip Folder
-        run: zip -r release.zip GameHelper/bin/Release/net5.0
+      - name: Create Zip For Release
+        uses: papeloto/action-zip@v1
+        with:
+          files: GameHelper/bin/Release/net5.0/
+          dest: release.zip
+
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
