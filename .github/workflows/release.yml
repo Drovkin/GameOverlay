@@ -35,7 +35,7 @@ jobs:
         with:
           tag_name: ${{ env.GH_RELEASE_VERSION }}
           name: GameHelper-standard-${{ env.GH_RELEASE_VERSION }}
-          files: GameHelper/bin/Release/net5.0
+          files: GameHelper/bin/Release/net5.0/VERSION.txt
           draft: false
           prerelease: false
 
