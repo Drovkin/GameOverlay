@@ -8,6 +8,8 @@ on:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
+    env:
+      GH_RELEASE_VERSION: s${{ needs.upversion.outputs.new_version }}
     needs: [upversion]
     strategy:
       matrix:
@@ -26,13 +28,29 @@ jobs:
       - name: Build
         run: |
           dotnet build --configuration Release --no-restore
-          echo ${{ needs.upversion.outputs.new_version }} > GameHelper/bin/Release/net5.0/VERSION.txt
+          echo $GH_RELEASE_VERSION > GameHelper/bin/Release/net5.0/VERSION.txt
 
-      - name: Upload the Build Artifact
-        uses: actions/upload-artifact@v2
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: GameHelper-${{ matrix.os }}-${{ needs.upversion.outputs.new_version }}
-          path: GameHelper/bin/Release/net5.0
+          tag_name: $GH_RELEASE_VERSION
+          release_name: GameHelper-${{ matrix.os }}-standard-$GH_RELEASE_VERSION
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: GameHelper/bin/Release/net5.0
+          asset_name: GameHelper-${{ matrix.os }}-standard-$GH_RELEASE_VERSION.zip
+          asset_content_type: application/zip
 
   upversion:
     runs-on: [ubuntu-latest]
