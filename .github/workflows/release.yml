@@ -17,18 +17,18 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 5.0.x
+#      - name: Setup .NET
+#        uses: actions/setup-dotnet@v1
+#        with:
+#          dotnet-version: 5.0.x
 
-      - name: Restore dependencies
-        run: dotnet restore
+#      - name: Restore dependencies
+#        run: dotnet restore
 
       - name: Build
         run: |
-          dotnet build --configuration Release --no-restore
-          echo $GH_RELEASE_VERSION > GameHelper/bin/Release/net5.0/VERSION.txt
+          #dotnet build --configuration Release --no-restore
+          echo ${{ env.GH_RELEASE_VERSION }} > GameHelper/bin/Release/net5.0/VERSION.txt
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
