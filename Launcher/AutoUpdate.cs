@@ -3,8 +3,8 @@
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using System;
+    using System.Diagnostics;
     using System.IO;
-    using System.IO.Compression;
     using System.Net;
 
     public static class AutoUpdate
@@ -73,19 +73,9 @@
             {
                 Console.WriteLine($"Your version is {currentVersion}. Latest version is {latestVersion}, downloading now...");
                 using var client = new WebClient();
-                try
-                {
-                    client.DownloadFile(downloadUrl, release_file_name);
-                    ZipFile.ExtractToDirectory(release_file_name, gameHelperDir, true);
-                    return true;
-                }
-                finally
-                {
-                    if (File.Exists(release_file_name))
-                    {
-                        File.Delete(release_file_name);
-                    }
-                }
+                client.DownloadFile(downloadUrl, release_file_name);
+                Process.Start("powershell.exe", $"Start-sleep -Seconds 3; Expand-Archive -Force {release_file_name} .; Remove-Item -Force {release_file_name}");
+                return true;
 
             }
 

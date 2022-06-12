@@ -10,13 +10,13 @@ namespace Launcher
 
     public static class Program
     {
-        private static void Main()
+        private static int Main()
         {
             if (!GameHelperFinder.TryFindGameHelperExe(out var gameHelperDir, out var gameHelperLoc))
             {
                 Console.WriteLine($"GameHelper.exe is also not found in {gameHelperDir}");
                 Console.ReadKey();
-                return;
+                return 1;
             }
 
             try
@@ -27,7 +27,8 @@ namespace Launcher
                 {
                     if (AutoUpdate.UpgradeGameHelper(gameHelperDir))
                     {
-                        break;
+                        // Returning because Launcher should auto-restart on exit.
+                        return 0;
                     }
                     else
                     {
@@ -65,6 +66,8 @@ namespace Launcher
                 Console.WriteLine($"Failed to launch GameHelper due to: {ex}");
                 Console.ReadKey();
             }
+
+            return 0;
         }
     }
 }
