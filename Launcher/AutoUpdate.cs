@@ -74,7 +74,7 @@
                 Console.WriteLine($"Your version is {currentVersion}. Latest version is {latestVersion}, downloading now...");
                 using var client = new WebClient();
                 client.DownloadFile(downloadUrl, release_file_name);
-                Process.Start("powershell.exe", $"Start-sleep -Seconds 3; Expand-Archive -Force {release_file_name} .; Remove-Item -Force {release_file_name}");
+                Process.Start("powershell.exe", $"Start-sleep -Seconds 3; Expand-Archive -Force {release_file_name} .; Remove-Item -Force {release_file_name}; ./Launcher.exe");
                 return true;
 
             }

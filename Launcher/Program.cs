@@ -30,7 +30,7 @@ namespace Launcher
                         // Returning because Launcher should auto-restart on exit.
                         return 0;
                     }
-                    else
+                    else if (isWaiting)
                     {
                         Console.WriteLine("Didn't find any new version, sleeping for 5 mins....");
                         Thread.Sleep(5 * 60 * 1000);
